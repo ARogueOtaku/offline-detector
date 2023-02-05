@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import "./App.css";
-import onlineIcon from "./assets/online.svg";
-import offlineIcon from "./assets/offline.svg";
 import { fetchWithTimeout } from "./utils";
 
 function Indicator({ indicator }) {
@@ -46,33 +44,33 @@ function App() {
   ]);
 
   const makeOnline = useCallback(() => {
-    if (indicator === "online") return;
     setIndicator("online");
     setHistory((oldHistory) => {
+      if (oldHistory.at(-1).status === "online") return [...oldHistory];
       const newEntry = {
         status: "online",
         time: new Date(),
       };
       return [...oldHistory, newEntry];
     });
-  }, [indicator]);
+  }, []);
 
   const makeOffine = useCallback(() => {
-    if (indicator === "offline") return;
     setIndicator("offline");
     setHistory((oldHistory) => {
+      if (oldHistory.at(-1).status === "offline") return [...oldHistory];
       const newEntry = {
         status: "offline",
         time: new Date(),
       };
       return [...oldHistory, newEntry];
     });
-  }, [indicator]);
+  }, []);
 
   const checkPulse = useCallback(async () => {
     try {
       setLastChecked(new Date());
-      await fetchWithTimeout("https://jsonplaceholder.typicode.com/todos/1", 5000);
+      await fetchWithTimeout("https://jsonplaceholder.typicode.com/todos/1", 5000, { mode: "no-cors" });
       makeOnline();
     } catch (e) {
       makeOffine();
@@ -88,10 +86,7 @@ function App() {
     <div className={`App ${theme}`}>
       <HelmetProvider>
         <Helmet>
-          <meta charset="UTF-8" />
-          <link rel="icon" type="image/svg+xml" href={indicator === "online" ? onlineIcon : offlineIcon} />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>{indicator.toUpperCase()}</title>
+          <title>{indicator === "online" ? "🟢 ON" : "🔴 OFF"}</title>
         </Helmet>
       </HelmetProvider>
       <div className="indicator">
