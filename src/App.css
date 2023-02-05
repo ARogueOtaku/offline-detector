@@ -4,12 +4,23 @@
   gap: 20px;
   align-items: center;
   padding: 2rem;
+  height: 100%;
   font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  background-color: var(--background);
+  color: var(--font);
 }
 
+.dark {
+  --background: #0e0e0e;
+  --font: #e1e1e1;
+}
+
+.light {
+  --background: #fafafa;
+  --font: #0e0e0e;
+}
 .sessiondetails {
   font-size: 1rem;
-  font-weight: bold;
 }
 
 .indicator {
@@ -28,6 +39,7 @@
 
 .history {
   border-collapse: collapse;
+  border-radius: 10px;
 }
 
 .history > caption {
@@ -36,18 +48,9 @@
   padding: 1rem;
 }
 
-.history tr:nth-child(even) {
-  background-color: #dddddd;
-}
-
-.history tr:nth-child(even) > td:nth-child(1),
-.history tr:nth-child(even) > th:nth-child(1) {
-  border-right: 1px solid #ffffff;
-}
-
 .history tr > td,
 .history tr > th {
-  border: 1px solid #dddddd;
+  border: 2px solid var(--font);
   text-align: left;
   padding: 1rem;
   padding-inline: 2rem;

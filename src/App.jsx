@@ -5,13 +5,8 @@ import onlineIcon from "./assets/online.svg";
 import offlineIcon from "./assets/offline.svg";
 import { fetchWithTimeout } from "./utils";
 
-const indicators = {
-  OFFLINE: "offline",
-  ONLINE: "online",
-};
-
 function Indicator({ indicator }) {
-  return <span className={indicator === indicators.OFFLINE ? "offline" : "online"}>{indicator}</span>;
+  return <span className={indicator}>{indicator}</span>;
 }
 
 function History({ history }) {
@@ -40,8 +35,9 @@ function History({ history }) {
 
 function App() {
   const sessionStart = useRef(new Date());
+  const [theme, setTheme] = useState(matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
   const [lastChecked, setLastChecked] = useState(sessionStart.current);
-  const [indicator, setIndicator] = useState(navigator.onLine ? indicators.ONLINE : indicators.OFFLINE);
+  const [indicator, setIndicator] = useState(navigator.onLine ? "online" : "offline");
   const [history, setHistory] = useState([
     {
       status: indicator,
@@ -50,11 +46,11 @@ function App() {
   ]);
 
   const makeOnline = useCallback(() => {
-    if (indicator === indicators.ONLINE) return;
-    setIndicator(indicators.ONLINE);
+    if (indicator === "online") return;
+    setIndicator("online");
     setHistory((oldHistory) => {
       const newEntry = {
-        status: indicators.ONLINE,
+        status: "online",
         time: new Date(),
       };
       return [...oldHistory, newEntry];
@@ -62,11 +58,11 @@ function App() {
   }, [indicator]);
 
   const makeOffine = useCallback(() => {
-    if (indicator === indicators.OFFLINE) return;
-    setIndicator(indicators.OFFLINE);
+    if (indicator === "offline") return;
+    setIndicator("offline");
     setHistory((oldHistory) => {
       const newEntry = {
-        status: indicators.OFFLINE,
+        status: "offline",
         time: new Date(),
       };
       return [...oldHistory, newEntry];
@@ -89,11 +85,11 @@ function App() {
   }, [checkPulse]);
 
   return (
-    <div className="App">
+    <div className={`App ${theme}`}>
       <HelmetProvider>
         <Helmet>
           <meta charset="UTF-8" />
-          <link rel="icon" type="image/svg+xml" href={indicator === indicators.ONLINE ? onlineIcon : offlineIcon} />
+          <link rel="icon" type="image/svg+xml" href={indicator === "online" ? onlineIcon : offlineIcon} />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <title>{indicator.toUpperCase()}</title>
         </Helmet>
